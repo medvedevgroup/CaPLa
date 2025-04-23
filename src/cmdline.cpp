@@ -77,7 +77,7 @@ CommandLineOptions parse_cla_count_segments(int argc, char **argv) {
         else if(is_int_vec)
             opt.count_fn = opt.in_fn+".index.rourk.txt";
         else
-            opt.count_fn = opt.gn_fn+".index.rourk.txt";
+            opt.count_fn = opt.gn_fn+".segments.txt";
     }       
 
     return opt;

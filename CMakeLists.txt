@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS  "-O3 -mbmi2 -msse4.2 -DNDEBUG -march=native ")
 
-
+# set(BUILD_DIVSUFSORT64 ON CACHE BOOL "Build 64-bit version of libdivsufsort")
 add_subdirectory(libdivsufsort)
 
 add_library(cmd STATIC 

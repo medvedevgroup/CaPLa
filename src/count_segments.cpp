@@ -17,13 +17,6 @@ uint64_t get_segments_count(size_t eps, const T &sa,
     bool is_dict_point_seq = false, bool connected = false) {
     int64_t prev_x = -1;
 
-    // needed for 64 bit values
-    // bool is_signed_value = false;
-    // using TT = typename decltype(sa)::value_type;
-    // if (std::is_signed<TT>::value) {
-    //     is_signed_value = true;
-    // } 
-
     auto in_fun = [&](auto i) {
         auto x = sa[i];
         if (x == -1) // x is suffix smaller than the k-mer size
@@ -37,33 +30,8 @@ uint64_t get_segments_count(size_t eps, const T &sa,
         return std::pair<int64_t, int64_t>(x + flag, i);
     };
     auto end_cond_indx = [&](){return false;};
-    
-    int64_t indx = 0, rank = 0;
-    // this will be called first
-    auto end_cond = [&](){
-        if (indx >= sa.size()) return true;
-        auto x = sa[indx++];
-        while(x == -1 || x == prev_x) {
-            if(indx == sa.size()) return true;
-            x = sa[indx++];
-        }
-        return false;
-    };
-
-    // only for dict for now
-    // this will be called second
-    auto next_fun = [&](auto _){
-        auto x = sa[indx-1];
-        int64_t diff = x - prev_x;
-        prev_x = x;
-        return std::pair<int64_t, int64_t>(rank++, x); 
-    };
-
     auto out_fun = [](auto) {};
-
-    return !is_dict_point_seq
-        ? make_segmentation_mod(sa.size(), eps, in_fun, out_fun, end_cond_indx, connected)
-        : make_segmentation_mod(sa.size(), eps, next_fun, out_fun, end_cond, connected);
+    return make_segmentation_mod(sa.size(), eps, in_fun, out_fun, end_cond_indx, connected);
 }
 
 template <typename T>
@@ -113,41 +81,6 @@ uint64_t get_segments_count_int(size_t eps, const T &sa,
         : make_segmentation_mod(sa.size(), eps, next_fun, out_fun, end_cond, connected);
 }
 
-// violet definition for dictionary (N points)
-template <typename T>
-uint64_t get_segments_count_2(size_t eps, const T &sa, 
-    bool is_dict_point_seq = false, bool connected = false) {
-    auto out_fun = [](auto) {};
-    auto end_cond = [&](){return false;};
-    int64_t prev_x = -1;
-    if (is_dict_point_seq) {
-        int64_t prev_i = -1;
-        auto in_fun_dict = [&](auto i) {
-            auto x = sa[i];
-            auto is_not_full_kmer = x == -1;
-            auto is_repetition = i > 0 && x == prev_x;
-            if (is_not_full_kmer || is_repetition)
-                return std::pair<int64_t, int64_t>(prev_i, -1); // segmentation will skip this point
-            prev_x = x;
-            prev_i = i;
-            return std::pair<int64_t, int64_t>(i, x);
-        };
-        return make_segmentation_mod(sa.size(), eps, in_fun_dict, out_fun, end_cond, connected);
-    } else {
-        auto in_fun_index = [&](auto i) {
-            auto x = sa[i];
-            if (x == -1) // x is suffix smaller than the k-mer size
-                return std::pair<int64_t, int64_t>(prev_x, -1); // segmentation will skip this point
-
-            // Here there is an adjustment for inputs with duplicate keys: at the end of a run of duplicate keys equal
-            // to x=key[i] such that x+1!=key[i+1], we map the values x+1,...,key[i+1]-1 to their correct rank i
-            auto flag = i > 0 && i + 1u < sa.size() && x == prev_x && x + 1 < sa[i + 1];
-            prev_x = x + flag;
-            return std::pair<int64_t, int64_t>(x + flag, i);
-        };
-        return make_segmentation_mod(sa.size(), eps, in_fun_index, out_fun, end_cond, connected);
-    }
-}
 
 template <typename T>
 uint64_t get_unique_elements(const T &vec){
