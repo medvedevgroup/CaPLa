@@ -35,8 +35,4 @@ struct CommandLineOptions {
     
 };
 
-CommandLineOptions parse_cla_count_segments(int argc, char **argv);
-CommandLineOptions parse_cla_frac_sketch(int argc, char **argv);
-CommandLineOptions parse_cla_space_comp(int argc, char **argv);
-CommandLineOptions parse_cla_kmer_type(int argc, char **argv);
-
+CommandLineOptions parse_cla_segment_count(int argc, char **argv);

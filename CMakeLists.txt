@@ -14,8 +14,6 @@ add_library(cmd STATIC
 )
 target_link_libraries(cmd PUBLIC)
 
-
-
 add_executable(count_segments 
     src/count_segments.cpp    
 )
@@ -29,12 +27,3 @@ find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(count_segments PUBLIC OpenMP::OpenMP_CXX)
 endif()
-
-add_executable(create_random_genome
-    src/create_random_genome.cpp    
-)
-
-add_executable(convert_kmer_types
-    src/convert_kmer_types.cpp    
-)
-target_link_libraries(convert_kmer_types PUBLIC cmd)
