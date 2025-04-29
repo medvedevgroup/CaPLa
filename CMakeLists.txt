@@ -6,8 +6,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS  "-O3 -DNDEBUG -march=native")
 
-# set(BUILD_DIVSUFSORT64 ON CACHE BOOL "Build 64-bit version of libdivsufsort")
 add_subdirectory(libdivsufsort)
+set(DIVSUFSORT_HEADER "${CMAKE_BINARY_DIR}/libdivsufsort/include/divsufsort.h")
+file(READ "${DIVSUFSORT_HEADER}" file_content)
+string(REPLACE "int32_t" "int64_t" file_content "${file_content}")
+file(WRITE "${DIVSUFSORT_HEADER}" "${file_content}")
+set_target_properties(mksary PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_library(cmd STATIC 
   src/cmdline.cpp

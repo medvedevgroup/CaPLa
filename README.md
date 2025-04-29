@@ -15,19 +15,6 @@ cmake ..
 make -j 8
 ```
 
-To create the suffix array builder executable `mksary` from the current `build` folder:
-
-```bash
-cd ../libdivsufsort
-mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE="Release" \
--DCMAKE_INSTALL_PREFIX="/usr/local" ..
-sed -i 's/int32_t/int64_t/g' include/divsufsort.h
-make
-cp examples/mksary ../../build/
-```
-
 ## Usage
 
 You can use the script `find_CaPLa.sh` to find CaPLa for a set of genomes.
