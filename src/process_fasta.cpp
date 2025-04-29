@@ -1,6 +1,6 @@
-#include<bits/stdc++.h>
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
 
 // reference: https://stackoverflow.com/a/58090517
