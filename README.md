@@ -1,14 +1,9 @@
 # CaPLa
 
 The **Canonical Piecewise Linear approximability (CaPLa)** is a measure for quantifying the efficiency of learned data structures based on piecewise linear approximations (PLAs) on a given dataset.
-
-CaPLa captures the *tightest power-law bound* on the average number of elements spanned by each segment in the PLA.
-It is defined as a triple  $(\alpha^\ast, \beta_\mathrm{low}^\ast, \beta_\mathrm{high}^\ast)$ such that,
-for a dataset with $n$ distinct elements and a PLA using $b(\varepsilon)$ segments at an error bound $\varepsilon$, the following inequality holds for all $\varepsilon$ in a given set of error bounds:
-$$\beta_\mathrm{low}^\ast \varepsilon^\alpha \leq \frac{n}{b(\varepsilon)} \leq \beta_\mathrm{high}^\ast \varepsilon^\alpha.$$
-
+The CaPLa for a genome is composed of three values, $(\alpha^\ast, \beta_\mathrm{low}^\ast, \beta_\mathrm{high}^\ast)$, whose meaning is described [below](#What-is-CaPLa).
 This repository provides a **tool for computing the CaPLa of a collection of genomes**.
-Given the genomes and a value $k$, it computes the $(\alpha^\ast, \beta_\mathrm{low}^\ast, \beta_\mathrm{high}^\ast)$ parameters for each genome's $k$-mer spectrum and outputs the results to a csv file.
+
 
 ## Building the tool
 
@@ -42,6 +37,19 @@ Each row of the file contains:
 4. $\alpha^\ast$
 5. $\beta_\mathrm{low}^\ast$
 6. $\beta_\mathrm{high}^\ast$
+
+## What is CaPLa
+
+Let $S$ be the sorted list of the k-mers in a genome, keeping duplicates.
+Let $n$ be the number of distinct k-mers in a genome.
+The rank of a k-mer is its position in this list.
+Given a positive integer $\varepsilon$, the PLA-size $b(\varepsilon)$ is the minimum number of segments a PLA needs to have to approximate the rank with an error bounded by $\varepsilon$.
+The CapLA is a triple  $(\alpha^\ast, \beta_\mathrm{low}^\ast, \beta_\mathrm{high}^\ast)$ that provides the following guarantee.
+For all $\varepsilon$ in the construction set (by default, $\varepsilon \in \{1, \ldots, 1024\}$), 
+
+$$\beta_\mathrm{low}^\ast \varepsilon^{\alpha^\ast} \leq \frac{n}{b(\varepsilon)} \leq \beta_\mathrm{high}^\ast \varepsilon^{\alpha^\ast}.$$
+
+In summary, CaPLa captures the *tightest power-law bound* on the average number of elements spanned by each segment in the piece-wise linear approximation of the rank curve of the spectrum/
 
 ## Under the hood
 
