@@ -52,3 +52,6 @@ The rank curve captures the relationship between each $k$-mer and its rank in th
 This step is done using the `count_segments` executable, which implements O'Rourke's algorithm to find the PLA with the minimal number of segments.
 
 Finally, the tool finds the CaPLa values for each genome using the `find_capla.py` script and writes the results to the `CaPLa.csv` file.
+
+## Data used in paper submission
+The data used in our paper submission is described in the [Reproducibility](Reproducibility) directory.
