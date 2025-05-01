@@ -1,7 +1,7 @@
 # CaPLa
 
 The **Canonical Piecewise Linear approximability (CaPLa)** is a measure for quantifying the efficiency of learned data structures based on piecewise linear approximations (PLAs) on a given dataset.
-The CaPLa for a genome is composed of three values, $(\alpha^\ast, \beta_\mathrm{low}^\ast, \beta_\mathrm{high}^\ast)$, whose meaning is described [below](#What-is-CaPLa).
+The CaPLa for a genome is composed of three values, $(\alpha^\ast, \beta_\mathrm{low}^\ast, \beta_\mathrm{high}^\ast),$ whose meaning is described [below](#What-is-CaPLa).
 This repository provides a **tool for computing the CaPLa of a collection of genomes**.
 
 
