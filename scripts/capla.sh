@@ -4,6 +4,8 @@ MKSARY_PATH="$BIN_PATH/mksary"
 SRC_PATH="$SCRIPT_PATH/../src"
 KMER="${2:-21}"
 
+set -e # Exit immediately if a command exits with a non-zero status
+
 if [[ -z "$1" ]]; then
     echo "Usage: $0 <directory> [kmer]"
     echo "  directory: Directory containing the .fna or .fasta files."
@@ -11,12 +13,7 @@ if [[ -z "$1" ]]; then
     exit 1
 fi
 
-if [[ -d "$1" ]]; then
-    cd "$1" || exit 1
-else
-    echo "Directory $1 does not exist."
-    exit 1
-fi
+cd "$1"
 
 if [[ ! -d "$BIN_PATH/venv" ]]; then
     echo "Creating virtual environment in $BIN_PATH/venv"
