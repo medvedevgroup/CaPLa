@@ -39,6 +39,7 @@ For example, you can run the tool on the sample genomes already included in the 
 
 The results will be saved in a file named `CaPLa.csv` inside the specified directory.
 Each row of the file contains:
+
 1. Genome name
 2. Number of unique $k$-mers
 3. $k$-mer length
@@ -53,17 +54,17 @@ Let $n$ be the number of distinct k-mers in a genome.
 The rank of a k-mer is its position in this list.
 Given a positive integer $\varepsilon$, the PLA-size $b(\varepsilon)$ is the minimum number of segments needed by a PLA to approximate the ranks with an error bounded by $\varepsilon$.
 The CaPLa is a triple $(\alpha^\ast, \beta_\mathrm{low}^\ast, \beta_\mathrm{high}^\ast)$ that provides the following guarantee.
-For all $\varepsilon$ in the construction set (by default, $\varepsilon \in \lbrace 1, \ldots, 1024 \rbrace$), 
+For all $\varepsilon$ in the construction set (by default, $\varepsilon \in \lbrace 1, \ldots, 1024 \rbrace$),
 
 $$\beta_\mathrm{low}^\ast \varepsilon^{\alpha^\ast} \leq \frac{n}{b(\varepsilon)} \leq \beta_\mathrm{high}^\ast \varepsilon^{\alpha^\ast}.$$
 
-In summary, CaPLa captures the *tightest power-law bound* on the average number of elements spanned by each segment in the piece-wise linear approximation of the rank curve of the spectrum.
+In summary, CaPLa captures the *tightest power-law bound* on the average number of elements spanned by each segment in the piece-wise linear approximation of the $k$-mer spectrum rank curve.
 
 ## Under the hood
 
-The tool begins by preprocessing each genome: it uses the `process_fast` executable to remove non-`ACGT` characters and create a single string with a single header. It then builds a suffix array for each genome using the `mksary` executable from the `libdivsufsort` library.
+The tool begins by preprocessing each genome: it uses the `process_fasta` executable to remove non-`ACGT` characters and create a single string with a single header. It then builds a suffix array for each genome using the `mksary` executable from the `libdivsufsort` library.
 
-Next, the tool computes the number of segments in the PLA of each genome's rank curve for each error bound $\varepsilon \in \lbrace 1, \ldots, 1024 \rbrace$.
+Next, the tool computes the number of segments in the PLA of each genome's rank curve for each error bound $\varepsilon \in \lbrace 1, 2, \ldots, 1024 \rbrace$.
 The rank curve captures the relationship between each $k$-mer and its rank in the suffix array.
 This step is done using the `count_segments` executable, which implements O'Rourke's algorithm to find the PLA with the minimal number of segments.
 

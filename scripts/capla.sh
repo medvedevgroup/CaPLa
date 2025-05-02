@@ -66,7 +66,6 @@ for file in *.segments.txt; do
     if [[ $FLAG -eq 1 ]]; then
         python3 "${SRC_PATH}/find_capla.py" "$file" "$file_base" "$KMER" CaPLa.csv F 
         FLAG=0
-        echo $FLAG
     else
         python3 "${SRC_PATH}/find_capla.py" "$file" "$file_base" "$KMER" CaPLa.csv T 
     fi
