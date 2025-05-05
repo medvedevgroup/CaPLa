@@ -5,7 +5,7 @@
 #include <string>
 #include <chrono>
 #include <iomanip>
-#include <type_traits>
+#include <cmath>
 #include "piecewise_linear_model.hpp"
 #include "cmdline.hpp"
 #include "suffix_array.h"
@@ -76,15 +76,16 @@ std::vector<size_t> eps_vector_up_to_single_segment(const T &sa, bool is_dict_po
 }
 
 template <typename T>
-void write_segments_count(string out_fn, const T &sa,  bool use_all_epsilons = false) {
+void write_segments_count(string out_fn, const T &sa,  bool use_all_epsilons, int64_t max_eps) {
     std::ofstream out_file(out_fn.c_str());
     std::vector<size_t> eps_vec;
     if (use_all_epsilons) {
-        for (int64_t i = 1024; i >= 1; i -= 1) {
+        for (int64_t i = max_eps; i >= 1; i -= 1) {
             eps_vec.push_back(i);
         }
-    } else {
-        for (int64_t i = 10; i >= 0; i -= 1) {
+    }else {
+        auto two_power = ceil(std::log2(max_eps));
+        for (int64_t i = two_power; i >= 0; i -= 1) {
             eps_vec.push_back(1ULL << i);
         }
     }
@@ -115,9 +116,9 @@ void write_segments_count(string out_fn, const T &sa,  bool use_all_epsilons = f
 }
 
 inline void process_suffix_array(std::string gn_fn, std::string sa_fn, int64_t kmer_size,
-        std::string out_fn, bool use_all_epsilons) {
+        std::string out_fn, bool use_all_epsilons, int64_t max_eps) {
     suffix_array<int64_t> sa(gn_fn, sa_fn, kmer_size);
-    write_segments_count(out_fn, sa, use_all_epsilons);
+    write_segments_count(out_fn, sa, use_all_epsilons, max_eps);
 }
 
 int main(int argc, char **argv) {
@@ -128,18 +129,16 @@ int main(int argc, char **argv) {
     bool use_all_epsilons = opt.use_all_epsilons;
     
     string gn_fn, sa_fn, in_fn, out_fn;
-    int64_t kmer_size;
+    int64_t kmer_size, max_eps;
     
     gn_fn = opt.gn_fn;
     sa_fn = opt.sa_fn;
     kmer_size = opt.kmer_size;
     out_fn = opt.count_fn;
-
-    
-    
+    max_eps = opt.max_eps;
 
     auto start = std::chrono::high_resolution_clock::now();
-    process_suffix_array(gn_fn, sa_fn, kmer_size, out_fn, use_all_epsilons);
+    process_suffix_array(gn_fn, sa_fn, kmer_size, out_fn, use_all_epsilons, max_eps);
     auto end = std::chrono::high_resolution_clock::now();
     
     auto duration_s = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();

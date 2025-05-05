@@ -21,6 +21,7 @@ CommandLineOptions parse_cla_segment_count(int argc, char **argv) {
     args::ValueFlag<int64_t> kmer_size(parser, "INT", "Kmer size to be used to construct the index. [default: 21]", {'k', "kmer_size"});
     args::Flag use_all_epsilons(parser, "BOOL", "Use consecutive epsilon values rather than powers of two (up to eps 1024) [default: false]", {'a', "all_eps"} );
     args::ValueFlag<std::string>count_fn(parser, "STRING", "File name where to save the segment count. [default: genome_fasta.rourk.woshare.out]", {'o', "out"});
+    args::ValueFlag<int64_t> max_eps(parser, "INT", "Maximum error value to be used. [default: 1024]", {'e', "max_eps"});
     
     
     try {
@@ -50,6 +51,7 @@ CommandLineOptions parse_cla_segment_count(int argc, char **argv) {
     if(opt.count_fn == "-1"){
         opt.count_fn = opt.gn_fn+"."+std::to_string(opt.kmer_size)+".segments.txt";
     }
+    if(max_eps) {opt.max_eps = args::get(max_eps);}
 
     return opt;
 }

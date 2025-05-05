@@ -2,22 +2,61 @@ SCRIPT_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 BIN_PATH="$SCRIPT_PATH/../build"
 MKSARY_PATH="$BIN_PATH/mksary"
 SRC_PATH="$SCRIPT_PATH/../src"
-KMER="${2:-21}"
-EPS_MAX="${3:-1024}"
-USE_ONLY_TWO_POWER_EPS="${4:-no}"
+
+# KMER="${2:-21}"
+# EPS_MAX="${3:-1024}"
+# USE_ONLY_TWO_POWER_EPS="${4:-no}"
+
+KMER="21"
+EPS_MAX="1024"
+USE_ONLY_TWO_POWER_EPS="no"
+directory=""
+
+usage() {                                      # Function: Print a help message.
+    echo "CaPLa arguments: -d directory [ -k kmer_size ] [ -e eps_max ] [ -t ] " 
+
+    # echo "Usage: $0 <directory> [kmer]"
+    echo "  -d directory: Directory containing the .fna or .fasta files."
+    echo "  -k kmer_size: [INT] Optional k-mer size (default is 21)."
+    echo "  -e eps_max: [INT] Optional maximum epsilon value (default is 1024)."
+    echo "  -t: Optional flag to make CaPLa use only the epsilon values that are power of 2 instead of consecutive ones. If not specified, it will use consecutive values upto maximum epsilon."
+    echo "  -h: Print help and exit."
+}
+exit_abnormal() {                              # Function: Exit with error.
+  usage
+  exit 1
+}
+
+while getopts ":d:k:e:th" opt; do
+  case $opt in
+    d) directory="$OPTARG" ;;
+    k) KMER="$OPTARG" ;;
+    e) EPS_MAX="$OPTARG" ;;
+    t) USE_ONLY_TWO_POWER_EPS="yes" ;;
+    h) usage; exit 0 ;;
+    \?) echo "Invalid option -$OPTARG" >&2; exit_abnormal ;;
+    :) echo "Option -$OPTARG requires an argument." >&2; exit_abnormal ;;
+  esac
+done
+
+# shift $((OPTIND -1)) # Shift off the options and optional --.
+
+if [[ -z "$directory" ]]; then
+    echo "Error: Directory not specified."
+    exit_abnormal
+fi
+if [[ ! -d "$directory" ]]; then
+    echo "Error: Directory $directory does not exist."
+    exit_abnormal
+fi
 
 set -e # Exit immediately if a command exits with a non-zero status
 
-if [[ -z "$1" ]]; then
-    echo "Usage: $0 <directory> [kmer]"
-    echo "  directory: Directory containing the .fna or .fasta files."
-    echo "  kmer: [INT] Optional k-mer size (default is 21)."
-    echo "  eps_max: [INT] Optional maximum epsilon value (default is 1024)."
-    echo "  use_only_two_power_eps: [yes | no] Optional flag to use only the epsilon values that are power of 2 instead of consecutive ones (default is 'no')."
-    exit 1
-fi
+# if [[ -z "$1" ]]; then
+#     exit 1
+# fi
 
-cd "$1"
+cd "$directory"
 
 if [[ ! -d "$BIN_PATH/venv" ]]; then
     echo "Creating virtual environment in $BIN_PATH/venv"
@@ -66,7 +105,7 @@ for file in *.processed.fasta; do
             count_sa=$((count_sa + 1))
         fi
         if [[ ! -f "$file."$KMER".segments.txt" ]]; then
-            echo "$BIN_PATH"/count_segments --genome_fasta="$file" --suffix_array="$file".sa "$EPS_FLAG" -k "$KMER" -e "$EPS_MAX" 
+            # echo "$BIN_PATH"/count_segments --genome_fasta="$file" --suffix_array="$file".sa "$EPS_FLAG" -k "$KMER" -e "$EPS_MAX" 
             if [[ $USE_ONLY_TWO_POWER_EPS == "yes" ]]; then
                 "$BIN_PATH"/count_segments --genome_fasta="$file" --suffix_array="$file".sa  -k "$KMER" -e "$EPS_MAX"
             else

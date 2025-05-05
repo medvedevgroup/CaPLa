@@ -17,6 +17,7 @@ struct CommandLineOptions {
     std::string fn_prefix;
 
     int64_t kmer_size {21};
+    int64_t max_eps {1024};
     std::string count_fn {"-1"};
     
     std::string in_fn {"-1"};
