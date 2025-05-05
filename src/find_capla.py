@@ -51,20 +51,17 @@ def get_capla(file_path, epsilon_filter=None):
     return df, n, opt_alpha, w, l, h
 
 
-def write_values(out_fn, data, is_append):
+def write_values(out_fn, data):
     import csv
+    import os    
     
-    write_type = 'w'
-    if is_append == True:
-        write_type = 'a'
-
     header = ['Genome', 'Uniq_kmers', 'K', 'Alpha', 
                 'Beta_min', 'Beta_max']
-    # data = [genome, kingdom, n50, gen_len, n, kmer, opt_alpha,
-    #         beta_diff, beta_min, beta_max, min_eps, num_pp]
-    with open(out_fn, mode=write_type) as f:
+    file_exists = os.path.isfile(out_fn)
+    
+    with open(out_fn, mode='a') as f:
         writer = csv.writer(f)
-        if is_append == False:
+        if not file_exists:
             writer.writerow(header)
         writer.writerow(data)
         
@@ -75,15 +72,10 @@ def main():
     genome = sys.argv[2]
     kmer = sys.argv[3]
     out_fn = sys.argv[4]
-    is_appen_str = sys.argv[5]
-    # gen_len = sys.argv[6]
-
+    
     df, n, opt_alpha, w, l, h = get_capla(segment_file)
     
     value_list = [genome, n, kmer, opt_alpha, l, h]
-    is_append = True
-    if is_appen_str == 'F':
-        is_append = False
-    write_values(out_fn, value_list, is_append)
+    write_values(out_fn, value_list)
 
 main()

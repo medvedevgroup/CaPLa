@@ -48,7 +48,7 @@ CommandLineOptions parse_cla_segment_count(int argc, char **argv) {
     if(count_fn) {opt.count_fn = args::get(count_fn);}
     if(use_all_epsilons) {opt.use_all_epsilons = true;}
     if(opt.count_fn == "-1"){
-        opt.count_fn = opt.gn_fn+".segments.txt";
+        opt.count_fn = opt.gn_fn+"."+std::to_string(opt.kmer_size)+".segments.txt";
     }
 
     return opt;

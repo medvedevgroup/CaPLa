@@ -24,6 +24,7 @@ else
     source "$BIN_PATH/venv/bin/activate"
 fi
 
+count_input_files=0
 count_processed=0
 count_sa=0
 count_seg=0
@@ -36,7 +37,9 @@ for file in *.fna *.fasta; do
 
     file_base=$(basename "$file")
     file_base="${file_base%%.*}"  # before first dot
-
+    if [[ "$file" != "$file_base.processed.fasta" ]]; then
+        count_input_files=$((count_input_files + 1))        
+    fi
     if [[ ! -f "$file_base.processed.fasta" ]]; then
         echo "Processing $file → ${file_base}.processed.fasta"
         "$BIN_PATH"/process_fasta "$file" "$file_base"
@@ -51,7 +54,7 @@ for file in *.processed.fasta; do
             "$MKSARY_PATH" "$file" "$file.sa"
             count_sa=$((count_sa + 1))
         fi
-        if [[ ! -f "$file.segments.txt" ]]; then
+        if [[ ! -f "$file."$KMER".segments.txt" ]]; then
             "$BIN_PATH"/count_segments --genome_fasta="$file" --suffix_array="$file".sa -a -k "$KMER"
             count_seg=$((count_seg + 1))
         fi
@@ -59,19 +62,15 @@ for file in *.processed.fasta; do
 done
 
 FLAG=1
-for file in *.segments.txt; do
+for file in *$KMER.segments.txt; do
     file_base=$(basename "$file")
     file_base="${file_base%%.*}"  # before first dot
     # print echo for the first file and do not print for the rest
-    if [[ $FLAG -eq 1 ]]; then
-        python3 "${SRC_PATH}/find_capla.py" "$file" "$file_base" "$KMER" CaPLa.csv F 
-        FLAG=0
-    else
-        python3 "${SRC_PATH}/find_capla.py" "$file" "$file_base" "$KMER" CaPLa.csv T 
-    fi
+    python3 "${SRC_PATH}/find_capla.py" "$file" "$file_base" "$KMER" CaPLa.csv 
     count_capla=$((count_capla + 1))
 done
 
+echo "Input files: $count_input_files"
 echo "Processed files: $count_processed"
 echo "Suffix arrays created: $count_sa"
 echo "Segments-count files created: $count_seg"
