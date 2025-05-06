@@ -29,12 +29,20 @@ make -j 8
 ## Usage
 
 The tool [capla.sh](scripts/capla.sh) scans a given folder for genomes with `.fna` or `.fasta` extension and computes the CaPLa for each genome.
-It takes as arguments the _path_ to the directory containing the genomes and an optional _k-mer size_ (default: 21).
+
+```bash
+CaPLa Usage: -d directory [ -k kmer_size ] [ -e eps_max ] [ -t ] 
+  -d directory: Directory containing the .fna or .fasta files.
+  -k kmer_size: [INT] Optional k-mer size (default is 21).
+  -e eps_max: [INT] Optional maximum epsilon value (default is 1024).
+  -t: Optional flag to make CaPLa use only the epsilon values that are power of 2 instead of consecutive ones. If not specified, it will use consecutive values upto maximum epsilon.
+  -h: Print help and exit.
+```
 
 For example, you can run the tool on the sample genomes already included in the `genomes` directory as follows:
 
 ```bash
-./scripts/capla.sh genomes/ 21
+./scripts/capla.sh -d genomes/ -k 21 -e 1024
 ```
 
 The results will be saved in a file named `CaPLa.csv` inside the specified directory.
