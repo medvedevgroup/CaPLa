@@ -46,6 +46,7 @@ For example, you can run the tool on the sample genomes already included in the 
 ```
 
 The results will be saved in a file named `CaPLa.csv` inside the specified directory.
+If that file already exists, new rsults will be appended to it.
 Each row of the file contains:
 
 1. Genome name
