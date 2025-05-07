@@ -45,7 +45,13 @@ def get_capla(file_path, epsilon_filter=None):
     eps1_segments = df[df.epsilon == 1].segments.values[0]
     log_eps_ratio = np.log(eps1_segments / df_no_eps1.segments) / np.log(df_no_eps1.epsilon)
     alpha_l, alpha_h = np.min(log_eps_ratio), np.max(log_eps_ratio)
-    opt_alpha = golden(lambda a: get_ribbon(df, n, a)[2], brack=(alpha_l, alpha_h))
+    try:
+        opt_alpha = golden(lambda a: get_ribbon(df, n, a)[2], brack=(alpha_l, alpha_h))
+    except Exception as e:
+        print(f"Error in finding a minimal point: {e}\n")
+        print(f'All epsilons have the same segment in file: {file_path}. Please try a different k-mer value.')
+        exit(1)
+        
     l, h, w = get_ribbon(df, n, opt_alpha) # beta_min, beta_max, beta_diff
 
     return df, n, opt_alpha, w, l, h
